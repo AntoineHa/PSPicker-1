@@ -199,7 +199,6 @@ dataselect_start=`date -d  "$start_time" "+%Y.$julian_day_start.%H.%M.%S"`
 dataselect_end=`date -d "$end_time" "+%Y.$julian_day_end.%H.%M.%S"`
 cd /home/crude/PSPicker/PSPicker-1/Functions/dataselect-3.17/
 ./dataselect @$list_file -ts "$dataselect_start" -te "$dataselect_end" -Pe -o $output
-rm -f $list_file
 
 # Mac platform 
 
@@ -207,10 +206,4 @@ rm -f $list_file
 #dataselect_end=`date -j -f "%Y %m %d %H:%M:%S" "$end_time" "+%Y.$julian_day_end.%H.%M.%S"`
 
 #echo "dataselect @$list_file -ts "$dataselect_start" -te "$dataselect_end" -o cat.mseed"
-
-
-
-
-
-
 
