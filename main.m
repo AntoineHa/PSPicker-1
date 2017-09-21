@@ -117,22 +117,22 @@ for i=1:numel(files_nor)
             [EVENT.PHASES(ind_S).WEIGHT]=deal(2);
 
             %%% 2) Extract Data (nood really need, only for plotting)
-            debug=0;
+
             [DATA,S]=extract_DATA(EVENT,mainfile{1},debug);
             if isempty(DATA)
                 continue
             end
-            %if debug; plot_DATA(S);keyboard;end
+            if debug; plot_DATA(S);keyboard;end
 
             %%% 3) Clean event and relocate
 
-            [EVENT_B,a,b]=rmsta_EVENT(EVENT,mainfile{1},mstan,limit_pha,limit_dev,0);
-            EVENT_C=rmres_EVENT(EVENT_B,rms_thres,hyp);
+            [EVENT_B,a,b]=rmsta_EVENT(EVENT,mainfile{1},mstan,limit_pha,limit_dev,0,debug);
+            EVENT_C=rmres_EVENT(EVENT_B,rms_thres,hyp,debug);
             if isempty(EVENT_C.LON)
                 continue
             end
             S.EVENTS=EVENT_C;
-            %if debug; plot_DATA(S);keyboard;end
+            if debug; plot_DATA(S);keyboard;end
             
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%% (2) Loop over mainfiles for refinement %%%
@@ -143,22 +143,20 @@ for i=1:numel(files_nor)
                 %%% Refine picks 
 
                 S=refine_PICKS(EVENT_C,mainfile{k},0);
-                
-                %if debug; plot_DATA(S);keyboard;end
+                if debug; plot_DATA(S);keyboard;end
 
                 %%%  Clean event and relocate
-                
+
                 EVENT_D=S.EVENTS;
-                [EVENT_E,station_reject,new_res]=rmsta_EVENT(EVENT_D,mainfile{k},mstan,limit_pha,limit_dev,1);
-                EVENT_F=rmres_EVENT(EVENT_E,rms_thres,hyp);
+                [EVENT_E,station_reject,new_res]=rmsta_EVENT(EVENT_D,mainfile{k},mstan,limit_pha,limit_dev,1,debug);
+                EVENT_F=rmres_EVENT(EVENT_E,rms_thres,hyp,debug);
          
                 if isempty(EVENT_F.LON)
                     continue
                 end
 
                 S.EVENTS=EVENT_F;
-                debug=0;
-                if debug; plot_DATA(S);keyboard;end;
+                if debug; plot_DATA(S);keyboard;end
                 
                 EVENT_C=EVENT_F;
             
@@ -167,13 +165,11 @@ for i=1:numel(files_nor)
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%%%%%% 3) AMPLITUDE PROCESS %%%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            num_hello=numel(EVENT_C.PHASES);
-            num_hello
+
             S=amp_EVENT(EVENT_C,mainfile{1},pz_file,0);
             EVENT_C=S.EVENTS;
-            %if debug; plot_DATA(S);keyboard;end
-            num_hello=numel(EVENT_C.PHASES);
-            num_hello
+            if debug; plot_DATA(S);keyboard;end
+
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%%%%%% WRITE Nordic file %%%%%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -196,8 +192,9 @@ for i=1:numel(files_nor)
             end
 
             %%% Write nordic
-            EVENT_C.PHASES
+
             event2nor(EVENT_C,output_nordic)
+
             %%% Movefile
 
             movefile(output_nordic,path_nordic)

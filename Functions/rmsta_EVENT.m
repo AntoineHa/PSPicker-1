@@ -13,7 +13,7 @@
 %     new_res
 
 
-function [OUT,station_reject,new_res]=rmsta_EVENT(IN,mainfile,mstan,limit,limit_dev,flag_plot)
+function [OUT,station_reject,new_res]=rmsta_EVENT(IN,mainfile,mstan,limit,limit_dev,flag_plot,show)
 
 % sfile='loc_scratch.out';
 % mainfile='mainfile_Gorkha.txt';
@@ -96,7 +96,7 @@ else
     station_reject=station_list(ind_sta);
 end
 
-OUT=comp_THEO(hyp,new_EVENT);
+OUT=comp_THEO(hyp,new_EVENT,show);
 
 if flag_plot
    figure

@@ -41,6 +41,12 @@ for i=1:length(cell_para)
     Main.(var_name)=eval(var_value);
 end
 
+%%% Check if path have a slash at the end
+
+if Main.sds_path(end)~='/'
+    Main.sds_path=[Main.sds_path,'/'];
+end
+
 %%% Check if paths exist
 
 flag=checkpath(Main);
@@ -118,7 +124,7 @@ map={'input_nordic','sds_path','hyp','station_file'};
 
 for i=1:numel(map)
     if ~exist(Main.(map{i}))
-        disp_str=sprintf('%s: %s does not exist\n',map{i},Main.sds_path);
+        disp_str=sprintf('%s: %s does not exist\n',map{i},Main.(map{i}));
         undefined_path=[undefined_path disp_str];
     end
 end

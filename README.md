@@ -8,3 +8,4 @@ Please see [here](https://chrisbail.github.io/PSPicker/) to have more info about
 
 
 
+# PSPicker2

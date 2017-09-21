@@ -8,16 +8,19 @@
 %     DATA
 %     S
 
-function [DATA,S]=extract_DATA(EVENT,mainfile)
+function [DATA,S]=extract_DATA(EVENT,mainfile,show)
 
 %%% Get path and paramters
 
 PickerParam=readmain(mainfile);
 
 hyp=PickerParam.hyp;
-delay_before=PickerParam.Extract_time(1);
-delay_after=PickerParam.Extract_time(1);
-mseed_file='./tmp/cat.mseed';
+delay_before=PickerParam.extract_time(1);
+delay_after=PickerParam.extract_time(1);
+mseed_file='cat.mseed';
+DATA=[];
+S=[];
+
 
 %%% Get List of stations to be processed from mainfile
 
@@ -29,7 +32,7 @@ channels_str=strjoin(channels);
 
 %%% Compute theo
 
-EVENT=comp_THEO(hyp,EVENT);
+EVENT=comp_THEO(hyp,EVENT,show);
 
 %%% Only get stations referenced in Parameter file
 
@@ -48,16 +51,23 @@ end_time_str=datestr(end_time,...
         'yyyy-mm-dd HH:MM:SS');    
 
 cmd=sprintf('-start "%s" -end "%s" -sta "%s" -comp "%s" -sds "%s" -o "%s"',...
-   start_time_str,end_time_str,stations_str,channels_str,PickerParam.SDS_path,mseed_file);
+   start_time_str,end_time_str,stations_str,channels_str,PickerParam.sds_path,mseed_file);
 
-[~,~]=system(['./Functions/sds2mseed.sh',' ',cmd]);
+
+locate_sds=which('sds2mseed.sh');
+error_flag=system([locate_sds,' ',cmd]);
+if error_flag
+    fprintf(1,'No data found in %s for %s <= time < %s\n',PickerParam.sds_path, start_time_str,end_time_str);
+    return
+end
+movefile(mseed_file,'./tmp/cat.mseed');
 movefile('scratch.file','./tmp/scratch.file');
 
 %%%%%%%%%%%%%%%%%%
 %%% Read file %%%%
 %%%%%%%%%%%%%%%%%%
 
-X=rdmseed(mseed_file);
+X=rdmseed('./tmp/cat.mseed');
 S=get_DATA(X);
 DATA=S.DATA;
 S.EVENTS=EVENT;

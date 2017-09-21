@@ -1,17 +1,17 @@
 % function made to compute the synthetic given an event stored in the strcuture 
 % given by read_EVENTS()
 
-function new_event=comp_THEO(hyp,event)
+function new_event=comp_THEO(hyp,event,show)
 
 %%% Start process
 
-if ~exist('hyp','dir')
-    mkdir('hyp');
+if ~exist('hyp_tmp','dir')
+    mkdir('hyp_tmp');
 end
 
 %%% Go into hyp/ dir to avoid stuffing current dir
 
-cd('hyp');
+cd('hyp_tmp');
 
 %%% Define input_output files
 
@@ -24,7 +24,7 @@ event2nor(event,sfile_input);
 
 %%% Compute synthetics
 
-comp_ARRIVALS(hyp,sfile_input,sfile_output,0)
+comp_ARRIVALS(hyp,sfile_input,sfile_output,show)
 
 %%% Read sfile
 

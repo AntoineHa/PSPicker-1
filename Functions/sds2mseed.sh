@@ -6,13 +6,14 @@
 # It's possible to define several stations comp or netw by writing` -sta "Station1,Station2"`
 
 # First check that dataselect is installed on PC, if not abort
-cd /home/crude/PSPicker/PSPicker-1/Functions/dataselect-3.17/
-./dataselect -v >/dev/null || { echo "dataselect command not found. \
+
+command -v dataselect >/dev/null || { echo "dataselect command not found. \
 Install it and export it to your PATH in .bashrc"; exit 1; }
 
 # Start program
 
 list_file="scratch.file"
+
 rm -f $list_file
 
 ### Set flags
@@ -174,7 +175,7 @@ for (( j=year_start; j<=year_end; j++ )); do
 				for network_s in "${network[@]}"; do 
 			
 					declare -a data_path=(`printf "%s%s/%s/%s/%s.D/" $sds_path $j "$network_s" "$station_s" "$comp_s"`)
-					wav_name=`printf "*%s.%03d" $j $i`
+					wav_name=`printf "*%s.%s" $j $i`
 					for data_path in "${data_path[@]}"; do
 					#echo "$station"
 					# define wav name and check if exist
@@ -197,17 +198,14 @@ done
 
 dataselect_start=`date -d  "$start_time" "+%Y.$julian_day_start.%H.%M.%S"`
 dataselect_end=`date -d "$end_time" "+%Y.$julian_day_end.%H.%M.%S"`
-cd /home/crude/PSPicker/PSPicker-1/Functions/dataselect-3.17/
-./dataselect @$list_file -ts "$dataselect_start" -te "$dataselect_end" -Pe -o $output
-rm -f $list_file
 
 # Mac platform 
 
-#dataselect_start=`date -j -f "%Y %m %d %H:%M:%S" "$start_time" "+%Y.$julian_day_start.%H.%M.%S"`
-#dataselect_end=`date -j -f "%Y %m %d %H:%M:%S" "$end_time" "+%Y.$julian_day_end.%H.%M.%S"`
+#dataselect_start=`date -j -f "%Y-%m-%d %H:%M:%S" "$start_time" "+%Y.$julian_day_start.%H.%M.%S"`
+#dataselect_end=`date -j -f "%Y-%m-%d %H:%M:%S" "$end_time" "+%Y.$julian_day_end.%H.%M.%S"`
 
 #echo "dataselect @$list_file -ts "$dataselect_start" -te "$dataselect_end" -o cat.mseed"
-
+dataselect @$list_file -ts "$dataselect_start" -te "$dataselect_end" -o $output
 
 
 
